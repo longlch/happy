@@ -18,12 +18,11 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "_user")
-public class User implements UserDetails {
+public class User implements UserDetails { // TO-LEARN:  interface provides necessary information about a user that Spring Security needs for authentication.
 
   @Id
   @GeneratedValue
   private int id;
-
   private String firstname;
   private String lastname;
   private String email;
