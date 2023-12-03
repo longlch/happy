@@ -30,6 +30,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+
     @Override
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -58,7 +59,8 @@ class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        var user = userDe
+        var user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
