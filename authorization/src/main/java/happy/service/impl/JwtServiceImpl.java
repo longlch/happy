@@ -28,12 +28,7 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String extractUsername(String token) {
-        return null;
-    }
-
-    @Override
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        return null;
+        return extractClaim(token, Claims::getSubject);
     }
 
     @Override
@@ -48,7 +43,8 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        return false;
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
@@ -66,4 +62,27 @@ public class JwtServiceImpl implements JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
 }
