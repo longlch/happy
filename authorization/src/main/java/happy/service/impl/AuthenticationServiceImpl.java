@@ -46,7 +46,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
         var savedUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user, 0L);
-        saveUserToken(savedUser, jwtToken);
+        saveUserToken(savedUser, refreshToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -67,7 +67,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user, 0L);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        saveUserToken(user, refreshToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -88,9 +88,8 @@ class AuthenticationServiceImpl implements AuthenticationService {
             var user = userRepository.findByEmail(userEmailFromToken).orElseThrow();
 
             if (jwtService.isTokenValid(refreshToken, user)) {
-                var accessToken = jwtService.generateToken(user);
                 revokeAllUserTokens(user);
-                saveUserToken(user, accessToken);
+                saveUserToken(user, refreshToken);
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(jwtService.generateToken(user))
                         .refreshToken(jwtService.generateRefreshToken(
