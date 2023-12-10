@@ -51,7 +51,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse login(AuthenticationRequest request) {
         authenticationManager.authenticate( // TO-LEARN: to authenticate user
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
