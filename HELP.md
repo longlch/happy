@@ -15,8 +15,16 @@ This project for me improve my coding skills
 
 #### Key learning
 
-- UserDetails: interface provides necessary information about a user that Spring Security needs for authentication.
+- Interface UserDetails: provides necessary information about a user that Spring Security needs for authentication.
+  - Ex: SecurityBeanConfiguration.java
 - Authenticate: Using AuthenticationManager class for query db to check user existing in service
+  - Ex: LoginController.java
 - Authorization: Using `SecurityContextHolder.getContext().setAuthentication(authToken)` to set Role for User all
   Application
+  - Ex: JwtAuthenticationFilter.java
+
+- Spring Security Context:
+  - @EnableWebSecurity in SecurityConfiguration
+  - AuthenticationProvider, AuthenticationManager, UserDetailsService, UsernamePasswordAuthenticationToken
+    
 
