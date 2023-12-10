@@ -20,13 +20,6 @@ public class AdminController {
         return "GET:: admin controller";
     }
 
-    @GetMapping("/get")
-    @PreAuthorize("hasAuthority('admin:create')")
-    public String getAdminWrite() {
-        return "GET:: write admin controller";
-    }
-
-
     @PostMapping
     @PreAuthorize("hasAuthority('admin:create')")
     @Hidden
