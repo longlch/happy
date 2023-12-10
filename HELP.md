@@ -13,6 +13,15 @@ This project for me improve my coding skills
   - Happy service
   - Authorization server
 
+#### User Flow
+
+- User Register
+- User Login
+  - AuthenticationManager for authenticate User
+- User access to Admin, Manager controller
+  - userDetails.getAuthorities() -> Get Authorities
+  - Set token for `SecurityContextHolder.getContext()`
+
 #### Key learning
 
 - Interface UserDetails: provides necessary information about a user that Spring Security needs for authentication.
@@ -26,5 +35,4 @@ This project for me improve my coding skills
 - Spring Security Context:
   - @EnableWebSecurity in SecurityConfiguration
   - AuthenticationProvider, AuthenticationManager, UserDetailsService, UsernamePasswordAuthenticationToken
-    
 
