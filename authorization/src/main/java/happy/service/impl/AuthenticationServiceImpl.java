@@ -82,18 +82,31 @@ class AuthenticationServiceImpl implements AuthenticationService {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
+
         refreshToken = authHeader.substring(7);
+        var isTokenValid = tokenRepository.findByToken(refreshToken)
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+
+        if (!isTokenValid) {
+            return;
+        }
+
         userEmailFromToken = jwtService.extractUsername(refreshToken);
         if (userEmailFromToken != null) {
             var user = userRepository.findByEmail(userEmailFromToken).orElseThrow();
 
             if (jwtService.isTokenValid(refreshToken, user)) {
                 revokeAllUserTokens(user);
-                saveUserToken(user, refreshToken);
+
+                var newAccessToken = jwtService.generateToken(user);
+                var newRefreshToken = jwtService.generateRefreshToken(
+                        user, jwtService.extractClaim(refreshToken, Claims::getExpiration).toInstant().toEpochMilli());
+                saveUserToken(user, newRefreshToken);
+
                 var authResponse = AuthenticationResponse.builder()
-                        .accessToken(jwtService.generateToken(user))
-                        .refreshToken(jwtService.generateRefreshToken(
-                                user, jwtService.extractClaim(refreshToken, Claims::getExpiration).toInstant().toEpochMilli()))
+                        .accessToken(newAccessToken)
+                        .refreshToken(newRefreshToken)
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
