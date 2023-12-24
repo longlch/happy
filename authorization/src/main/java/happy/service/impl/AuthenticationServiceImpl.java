@@ -1,5 +1,6 @@
 package happy.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import happy.constant.TokenType;
 import happy.dto.AuthenticationRequest;
 import happy.dto.AuthenticationResponse;
@@ -10,9 +11,11 @@ import happy.repository.TokenRepository;
 import happy.repository.UserRepository;
 import happy.service.AuthenticationService;
 import happy.service.JwtService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +45,8 @@ class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         var savedUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        saveUserToken(savedUser, jwtToken);
+        var refreshToken = jwtService.generateRefreshToken(user, 0L);
+        saveUserToken(savedUser, refreshToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -62,9 +65,9 @@ class AuthenticationServiceImpl implements AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user, 0L);
         revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        saveUserToken(user, refreshToken);
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken)
@@ -73,7 +76,41 @@ class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String userEmailFromToken;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return;
+        }
 
+        refreshToken = authHeader.substring(7);
+        var isTokenValid = tokenRepository.findByToken(refreshToken)
+                .map(t -> !t.isExpired() && !t.isRevoked())
+                .orElse(false);
+
+        if (!isTokenValid) {
+            return;
+        }
+
+        userEmailFromToken = jwtService.extractUsername(refreshToken);
+        if (userEmailFromToken != null) {
+            var user = userRepository.findByEmail(userEmailFromToken).orElseThrow();
+
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                revokeAllUserTokens(user);
+
+                var newAccessToken = jwtService.generateToken(user);
+                var newRefreshToken = jwtService.generateRefreshToken(
+                        user, jwtService.extractClaim(refreshToken, Claims::getExpiration).toInstant().toEpochMilli());
+                saveUserToken(user, newRefreshToken);
+
+                var authResponse = AuthenticationResponse.builder()
+                        .accessToken(newAccessToken)
+                        .refreshToken(newRefreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 
     private void saveUserToken(User user, String jwtToken) {

@@ -33,12 +33,19 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateToken(UserDetails userDetails) {
-        return buildToken(Map.of(), userDetails, jwtExpiration);
+        return buildToken(Map.of(), userDetails, new Date(System.currentTimeMillis() + jwtExpiration));
     }
 
     @Override
-    public String generateRefreshToken(UserDetails userDetails) {
-        return buildToken(new HashMap<>(), userDetails, refreshExpiration);
+    public String generateRefreshToken(UserDetails userDetails, long refreshExpiration) {
+        Date date;
+        if (refreshExpiration == 0L) {
+            date = new Date(System.currentTimeMillis() + this.refreshExpiration);
+        } else {
+            date = new Date(refreshExpiration);
+        }
+
+        return buildToken(new HashMap<>(), userDetails, date);
     }
 
     @Override
@@ -47,13 +54,13 @@ public class JwtServiceImpl implements JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
+    private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Date expiration) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(expiration)
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -72,7 +79,8 @@ public class JwtServiceImpl implements JwtService {
                 .getBody();
     }
 
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    @Override
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
