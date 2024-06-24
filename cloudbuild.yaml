@@ -1,0 +1,5 @@
+#sample cloud build structure for node js
+steps:
+  - name: 'node'
+    entrypoint: 'yarn'
+    args: [ 'install' ]
