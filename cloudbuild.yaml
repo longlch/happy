@@ -1,5 +1,8 @@
-#sample cloud build structure for node js
+#write cloud build
 steps:
-  - name: 'node'
-    entrypoint: 'yarn'
-    args: [ 'install' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia-east1-docker.pkg.dev/happy-427410/happy-dev/my-image', '.' ]
+  # Docker Push
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push',
+            'asia-east1-docker.pkg.dev/happy-427410/happy-dev/my-image' ]
