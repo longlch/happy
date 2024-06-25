@@ -1,8 +1,13 @@
-#write cloud build
 steps:
+  # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'build', '-t', 'asia-east1-docker.pkg.dev/happy-427410/happy-dev/my-image', '.' ]
-  # Docker Push
+    args: [ 'build', '-t', 'gcr.io/happy-427410/happy-dev', '.' ]
+  # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push',
-            'asia-east1-docker.pkg.dev/happy-427410/happy-dev/my-image' ]
+    args: [ 'push', 'gcr.io/happy-427410/happy-dev' ]
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [ 'run', 'deploy', 'happy', '--image', 'gcr.io/happy-427410/happy-dev', '--region', 'asia-east1' ]
+images:
+  - gcr.io/happy-427410/happy-dev
