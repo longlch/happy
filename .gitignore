@@ -46,3 +46,5 @@ log4j2-spring.xml
 
 .mvn/
 target/
+node_modules
+.env
