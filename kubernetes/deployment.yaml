@@ -5,16 +5,16 @@ metadata:
   name: pod-info-deployment
   namespace: development
   labels:
-    name: pod-info
+    app: pod-info
 spec:
   replicas: 3
   selector:
     matchLabels:
-      name: pod-info
+      app: pod-info
   template:
     metadata:
       labels:
-        name: pod-info
+        app: pod-info
     spec:
       containers:
         - name: pod-info-container

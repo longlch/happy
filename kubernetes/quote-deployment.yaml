@@ -5,16 +5,16 @@ metadata:
   name: quote-service-deployment
   namespace: development
   labels:
-    name: quote-service-info
+    app: quote-service-info
 spec:
   replicas: 2
   selector:
     matchLabels:
-      name: quote-service-info
+      app: quote-service-info
   template:
     metadata:
       labels:
-        name: quote-service-info
+        app: quote-service-info
     spec:
       containers:
         - name: quote-container
