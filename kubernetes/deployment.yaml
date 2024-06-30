@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-info-deployment
+  namespace: development
+  labels:
+    name: pod-info
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: pod-info
+  template:
+    metadata:
+      name: pod-info
+      labels:
+        name: pod-info
+    spec:
+      containers:
+        - name: pod-info-container
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
