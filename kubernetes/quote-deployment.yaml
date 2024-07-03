@@ -19,5 +19,12 @@ spec:
       containers:
         - name: quote-container
           image: datawire/quote:0.5.0
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "250m"
+            limits:
+              memory: "64Mi"
+              cpu: "500m"
           ports:
             - containerPort: 8080
