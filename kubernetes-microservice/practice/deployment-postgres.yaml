@@ -21,9 +21,15 @@ spec:
             - name: POSTGRES_DB
               value: url_shortener_db
             - name: POSTGRES_USER
-              value: user
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: DATABASE_USER
             - name: POSTGRES_PASSWORD
-              value: mysecretpassword
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: DATABASE_PASSWORD
 
 ---
 apiVersion: v1

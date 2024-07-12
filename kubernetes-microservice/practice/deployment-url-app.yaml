@@ -20,17 +20,30 @@ spec:
           name: go-url-shortener
           env:
             - name: POSTGRES_HOST
-              value: postgres-service # Work ok
+              valueFrom:
+                configMapKeyRef:
+                  name: my-config
+                  key: DATABASE_HOST
+            #              value: postgres-service # Work ok
             #              value:  10.244.120.67 # Work ok
             #              value: http://postgres-service.default.svc.cluster.local # Not Work: due to this 2 implies an HTTP connection, but PostgreSQL uses TCP for its connections. This mismatch can cause errors.
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_DATABASE
-              value: url_shortener_db
+              valueFrom:
+                configMapKeyRef:
+                  name: my-config
+                  key: DATABASE_NAME
             - name: POSTGRES_USER
-              value: user
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: DATABASE_USER
             - name: POSTGRES_PASSWORD
-              value: mysecretpassword
+              valueFrom:
+                secretKeyRef:
+                  name: my-secret
+                  key: DATABASE_PASSWORD
           ports:
             - containerPort: 8080
 
