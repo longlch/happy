@@ -17,3 +17,6 @@ minikube service <SERVICE_NAME>
 helm upgrade first-release webapp1/ --values ./webapp1/values.yaml
 helm ls 
 
+kubectl port-forward svc/myhelmapp 8888:80
+
+
