@@ -1,0 +1,13 @@
+---
+- name: install nginx and start service
+  hosts: db
+  become: true
+  tasks:
+
+    - name: install nginx
+      apt: name=nginx state=present
+
+    - name: start service
+      service: name=nginx state=restarted
+
+# write command to Uninstall nginx

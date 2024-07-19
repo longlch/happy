@@ -1,0 +1,2 @@
+node01 ansible_host=192.168.201.11 ansible_user=vagrant
+node02 ansible_host=192.168.201.12 ansible_user=vagrant
