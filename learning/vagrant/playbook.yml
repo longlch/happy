@@ -1,6 +1,6 @@
 ---
 - name: install nginx and start service
-  hosts: db
+  hosts: server
   become: true
   tasks:
 
