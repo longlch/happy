@@ -3,11 +3,16 @@
   hosts: server
   become: true
   tasks:
+############### ping and Print inside host ############
+    - name: Ping my hosts
+      ansible.builtin.ping:
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
 
-    - name: install nginx
-      apt: name=nginx state=present
+############### Install nginx ############
+#    - name: install nginx
+#      apt: name=nginx state=present
+#    - name: start service
+#      service: name=nginx state=restarted
 
-    - name: start service
-      service: name=nginx state=restarted
-
-# write command to Uninstall nginx

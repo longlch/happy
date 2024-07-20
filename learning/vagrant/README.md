@@ -41,6 +41,8 @@ sudo vagrant reboot
 # restart
 sudo vagrant restart
 
+# shutdown
+sudo vagrant halt
 
 # Ansible Section
 [control]
@@ -67,14 +69,16 @@ https://spacelift.io/blog/ansible-tutorial
 - https://github.com/Imoustak/ansible_intro/tree/main
 - https://dev.to/educative/ansible-for-beginners-get-started-with-it-automation-4mci#nextsteps
 
-vargrant ssh-config
-`copy IdentityFile and add to host file`
-
-`ansible -i hosts all -m ping`
-
 ssh-copy-id -i /Users/longhoangphan/.ssh/id_ed25519 vagrant@192.168.201.12
+
 sudo vagrant ssh-config | grep IdentityFile
 
-ansible-playbook -i host playbook.yml
+## Ansible commands
+ansible-inventory -i host --list
 ansible all -i host --limit node01 -a "/bin/echo hello"
+
+## use yaml instead
+ansible-playbook -i host playbook.yml
+ansible-playbook -i host.yaml playbook.yml
+
 
