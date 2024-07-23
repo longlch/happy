@@ -48,3 +48,10 @@ log4j2-spring.xml
 target/
 node_modules
 .env
+
+!**/terraform/.terraform/
+!**/terraform/.terraform/**
+!**/vagrant/.vagrant/**
+!**/vagrant/.vagrant/**
+!**/vagrant/.vagrant/
+
