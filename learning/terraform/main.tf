@@ -18,7 +18,7 @@ resource "google_compute_network" "vpc_network" { // define components of your i
 resource "google_compute_instance" "vm_instance" {
   name         = "terraform-instance"
   machine_type = "f1-micro"
-  zone = "asia-east1-a"
+  zone = var.zone
   tags = ["web", "dev"]
 
 
