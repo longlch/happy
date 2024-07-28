@@ -11,6 +11,7 @@ pipeline {
         GCLOUD_CREDS=credentials('gcloud-creds')
         IMAGE_NAME = 'sample-node-v2'
         IMAGE_TAG = 'latest'
+        LOCATION = 'asia-east1-docker.pkg.dev'
     }
     stages {
         stage('Checkout') {
@@ -28,9 +29,8 @@ pipeline {
         stage('Authenticate') {
             steps {
                 sh '''
-                    echo "hello world" > hello.txt
-                    gcloud version
                     gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
+                    gcloud auth configure-docker $LOCATION
                 '''
             }
         }
@@ -38,7 +38,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    app = docker.build("asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}")
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
                 }
             }
         }
@@ -46,18 +46,10 @@ pipeline {
         stage('Push to Google Cloud Registry') {
             steps {
                 script {
-                    sh 'gcloud auth configure-docker asia-east1-docker.pkg.dev'
-                    sh 'docker push asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}'
-
-//                    withDockerRegistry([credentialsId: 'gcloud-creds', url: "https://asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}"]) {
-//                        sh 'docker tag ${IMAGE_NAME}:${IMAGE_TAG} asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}'
-//                        sh 'docker push asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}'
-//                    }
-
-//                    docker.withRegistry('https://eu.gcr.io', 'gcr:gcloud-creds') {
-//                        app.push("${env.BUILD_NUMBER}")
-//                        app.push("latest")
-//                    }
+                    sh '''
+                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker push asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+                    '''
                 }
             }
         }
