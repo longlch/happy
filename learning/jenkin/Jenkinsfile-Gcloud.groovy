@@ -10,8 +10,11 @@ pipeline {
         REPOSITORY='happy-dev'
         GCLOUD_CREDS=credentials('gcloud-creds')
         IMAGE_NAME = 'sample-node-v2'
+        FINAL_IMAGE_NAME = 'sample-node-v2:latest'
         IMAGE_TAG = 'latest'
         LOCATION = 'asia-east1-docker.pkg.dev'
+        ARTIFACT_REGISTRY = "${LOCATION}/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}" // Corrected line
+
     }
     stages {
         stage('Checkout') {
@@ -30,7 +33,7 @@ pipeline {
             steps {
                 sh '''
                     gcloud auth activate-service-account --key-file="$GCLOUD_CREDS"
-                    gcloud auth configure-docker $LOCATION
+                    gcloud auth configure-docker ${LOCATION}
                 '''
             }
         }
@@ -38,7 +41,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    docker.build("${FINAL_IMAGE_NAME}")
                 }
             }
         }
@@ -47,8 +50,8 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        docker tag ${IMAGE_NAME}:${IMAGE_TAG} asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
-                        docker push asia-east1-docker.pkg.dev/${PROJECT}/${REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+                        docker tag ${FINAL_IMAGE_NAME} ${ARTIFACT_REGISTRY}
+                        docker push ${ARTIFACT_REGISTRY}
                     '''
                 }
             }
