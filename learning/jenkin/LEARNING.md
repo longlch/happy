@@ -18,3 +18,6 @@ gcloud auth activate-service-account --key-file="/Users/longhoangphan/project/lo
 
 docker push asia-east1-docker.pkg.dev/happy-427410/happy-dev/sample-node-v1
 gcloud auth configure-docker asia-east1-docker.pkg.dev
+
+
+
