@@ -1,4 +1,4 @@
-terraform { //  including the required providers Terraform will use to provision your infrastructure
+terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -7,20 +7,19 @@ terraform { //  including the required providers Terraform will use to provision
   }
 }
 
-provider "google" { // A provider is a plugin that Terraform uses to create and manage your resources
+provider "google" {
   project = "happy-427410"
 }
 
-resource "google_compute_network" "vpc_network" { // define components of your infrastructure.
+resource "google_compute_network" "vpc_network" {
   name = "terraform-network"
 }
 
 resource "google_compute_instance" "vm_instance" {
-  name         = "terraform-instance"
-  machine_type = "f1-micro"
+  name         = "jenkin-instance"
+  machine_type = "g1-small"
   zone = var.zone
   tags = ["web", "dev"]
-
 
   boot_disk {
     initialize_params {
@@ -31,7 +30,19 @@ resource "google_compute_instance" "vm_instance" {
   network_interface {
     network = google_compute_network.vpc_network.name
     access_config {
+      # Enable external IP address for SSH access
+      network_tier = "PREMIUM"
     }
   }
 }
 
+resource "google_compute_firewall" "ssh_firewall" {
+  name    = "allow-ssh"
+  network = google_compute_network.vpc_network.name
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+  source_ranges = ["0.0.0.0/0"] # Allow SSH from anywhere
+  target_tags = ["web", "dev"] # Allow SSH to instances with these tags
+}

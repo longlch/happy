@@ -20,4 +20,10 @@ docker push asia-east1-docker.pkg.dev/happy-427410/happy-dev/sample-node-v1
 gcloud auth configure-docker asia-east1-docker.pkg.dev
 
 
+ssh-copy-id -i ~/.ssh/id_rsa hoanglonglch@34.80.176.143
+ssh -i ~/.ssh/jenkin hoanglonglch@34.80.176.143
+
+alias ssh-jenkin="ssh -i ~/.ssh/jenkin hoanglonglch@34.80.176.143"
+
+
 

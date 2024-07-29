@@ -1,0 +1,6 @@
+server:
+  hosts:
+    jenkin-instance:
+      ansible_host: 34.80.176.143
+      ansible_user: hoanglonglch
+      ansible_ssh_private_key_file: ~/.ssh/jenkin
