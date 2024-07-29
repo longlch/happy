@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+    stage('Build Docker Image') {
             steps {
                 script {
                     docker.build("${FINAL_IMAGE_NAME}")
@@ -58,15 +58,15 @@ pipeline {
         }
     }
 
-//    post {
-//        always {
-//            cleanWs()
-//        }
-//        success {
-//            echo 'The build and push succeeded!'
-//        }
-//        failure {
-//            echo 'The build or push failed.'
-//        }
-//    }
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'The build and push succeeded!'
+        }
+        failure {
+            echo 'The build or push failed.'
+        }
+    }
 }
