@@ -24,13 +24,13 @@
         name: apt-transport-https
         state: present
 
-    - name: Add Google Cloud SDK repository
-      apt_repository:
-        repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
+    - name: Install dependencies for apt over HTTPS
+      apt:
+        name: apt-transport-https
         state: present
 
-    - name: Add Google Cloud public key
-      apt_key:
+    - name: Download the Google Cloud SDK package repository signing key
+      ansible.builtin.get_url:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
 
@@ -58,12 +58,6 @@
       apt:
         name: jenkins
         state: present
-
-    - name: Start and enable Docker
-      systemd:
-        name: docker
-        state: started
-        enabled: yes
 
     - name: Start and enable Jenkins
       systemd:
