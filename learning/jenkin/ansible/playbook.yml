@@ -70,6 +70,12 @@
         name: jenkins
         state: present
 
+    - name: Add Jenkins to Docker group
+      user:
+        name: jenkins
+        groups: docker
+        append: yes
+
     - name: Start and enable Jenkins
       systemd:
         name: jenkins
