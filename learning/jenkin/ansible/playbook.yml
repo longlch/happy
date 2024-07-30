@@ -34,20 +34,25 @@
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         dest: /etc/apt/trusted.gpg.d/gcloud.gpg
 
-#    - name: Add Google Cloud SDK repository
-#      apt_repository:
-#        repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
-#        filename: "google-cloud-sdk"
-#        state: present
+    #    - name: Add Google Cloud SDK repository
+    #      apt_repository:
+    #        repo: "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main"
+    #        filename: "google-cloud-sdk"
+    #        state: present
 
     - name: Install Google Cloud SDK
       apt:
         name: google-cloud-sdk
         state: present
 
-    - name: Install Jenkins dependencies
+    - name: Uninstall openjdk-11-jdk
       apt:
         name: openjdk-11-jdk
+        state: absent
+
+    - name: Install new JDK version (replace with your desired version)
+      apt:
+        name: openjdk-17-jdk  # Example: openjdk-17-jdk
         state: present
 
     - name: Add Jenkins repository key
@@ -70,4 +75,3 @@
         name: jenkins
         state: started
         enabled: yes
-
