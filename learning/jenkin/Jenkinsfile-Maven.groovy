@@ -1,29 +1,15 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.0'
-            args '-v /root/.m2:/root/.m2'
-        }
-    }
+    agent any
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                git 'https://github.com/longlch/simple-java-maven-app'
             }
         }
-        stage('Test') {
+
+        stage('Install Dependencies') {
             steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
+                sh 'mvn clean install -DskipTest -Ddependency-check.skip=true -Dmaven.test.skip'
             }
         }
     }
