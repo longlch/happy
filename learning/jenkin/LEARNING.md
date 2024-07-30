@@ -27,3 +27,5 @@ alias ssh-jenkin="ssh -i ~/.ssh/jenkin hoanglonglch@34.80.176.143"
 
 
 
+# Make sure jenkin in running
+sudo systemctl status jenkins

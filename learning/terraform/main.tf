@@ -19,7 +19,7 @@ resource "google_compute_instance" "vm_instance" {
   name         = "jenkin-instance"
   machine_type = "g1-small"
   zone = var.zone
-  tags = ["web", "dev"]
+  tags = ["web", "dev", "http-server"] # Add http-server tag
 
   boot_disk {
     initialize_params {
@@ -45,4 +45,15 @@ resource "google_compute_firewall" "ssh_firewall" {
   }
   source_ranges = ["0.0.0.0/0"] # Allow SSH from anywhere
   target_tags = ["web", "dev"] # Allow SSH to instances with these tags
+}
+
+resource "google_compute_firewall" "http_firewall" {
+  name    = "allow-http"
+  network = google_compute_network.vpc_network.name
+  allow {
+    protocol = "tcp"
+    ports    = ["8080"]
+  }
+  source_ranges = ["0.0.0.0/0"] # Allow HTTP from anywhere
+  target_tags = ["web", "dev"] # Allow HTTP to instances with this tag
 }
