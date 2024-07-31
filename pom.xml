@@ -15,7 +15,7 @@
     <name>happy</name>
     <description>happy</description>
     <modules>
-        <module>agorithm-learning</module>
+        <module>authorization</module>
     </modules>
     <properties>
         <java.version>17</java.version>
