@@ -52,7 +52,7 @@ resource "google_compute_firewall" "http_firewall" {
   network = google_compute_network.vpc_network.name
   allow {
     protocol = "tcp"
-    ports    = ["8080"]
+    ports    = ["8080", "80"]
   }
   source_ranges = ["0.0.0.0/0"] # Allow HTTP from anywhere
   target_tags = ["web", "dev"] # Allow HTTP to instances with this tag

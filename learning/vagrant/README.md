@@ -81,4 +81,4 @@ ansible all -i host --limit node01 -a "/bin/echo hello"
 ansible-playbook -i host playbook.yml
 ansible-playbook -i host.yaml playbook.yml
 
-
+ansible-playbook -i host.yaml nginx-playbook.yml

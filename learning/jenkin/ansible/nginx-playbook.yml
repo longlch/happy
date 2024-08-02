@@ -1,0 +1,83 @@
+---
+- name: Install DevOps Tools
+  hosts: all
+  become: yes
+  vars:
+    ip_address: "34.80.176.143"
+    ssl_cert_path: "/etc/ssl/certs/selfsigned.crt"
+    ssl_key_path: "/etc/ssl/private/selfsigned.key"
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start and enable Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Create SSL directory
+      file:
+        path: /etc/ssl/private
+        state: directory
+        mode: '0755'
+
+    - name: Generate a self-signed SSL certificate
+      command: >
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048
+        -keyout {{ ssl_key_path }}
+        -out {{ ssl_cert_path }}
+        -subj "/C=US/ST=State/L=City/O=Organization/OU=OrgUnit/CN={{ ip_address }}"
+      args:
+        creates: "{{ ssl_cert_path }}"
+
+    - name: Configure Nginx as Reverse Proxy with SSL
+      copy:
+        dest: /etc/nginx/sites-available/jenkins
+        content: |
+          server {
+              listen 80;
+              server_name {{ ip_address }};
+          
+              location / {
+                  return 301 https://$host$request_uri;
+              }
+          }
+          
+          server {
+              listen 443 ssl;
+              server_name {{ ip_address }};
+          
+              ssl_certificate {{ ssl_cert_path }};
+              ssl_certificate_key {{ ssl_key_path }};
+          
+              location / {
+                  proxy_pass http://localhost:8080;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+    - name: Enable Nginx site configuration
+      file:
+        src: /etc/nginx/sites-available/jenkins
+        dest: /etc/nginx/sites-enabled/jenkins
+        state: link
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Test Nginx configuration
+      command: nginx -t
+
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
