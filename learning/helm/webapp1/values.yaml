@@ -1,0 +1,13 @@
+name: "myhelmapp"
+namespace: "default"
+
+configmap:
+  name: myconfigmapv1.0
+  data:
+    BG_COLOR: '#12181b'
+    FONT_COLOR: '#FFFFFF'
+    CUSTOM_HEADER: 'Customized with a configmap! from helm'
+
+image:
+  name: "devopsjourney1/mywebapp"
+  tag: "latest"
