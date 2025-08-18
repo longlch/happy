@@ -14,11 +14,18 @@ public class BubbleSort {
         }*/
 
         // Try 2: bubbleSortSecondTry
-        int[] arr2 = {7, 12, 9, 11, 3};
+        /*int[] arr2 = {7, 12, 9, 11, 3};
         bubbleSortSecondTry(arr2);
         for (int num : arr2) {
             System.out.print(num + " ");
-        }
+        }*/
+
+        // Solution 1: bubbleSortFirstSolution
+        /*int[] arr = {7, 12, 9, 11, 3};
+        bubbleSortFirstSolution(arr);
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }*/
 
     }
 
@@ -37,11 +44,25 @@ public class BubbleSort {
         }
     }
 
-    public static void bubbleSortSecondTry(int[] arr) { // Try 1
+    public static void bubbleSortSecondTry(int[] arr) { // Try 2
         for (int i = 0; i < arr.length; i++) {
             bubbleSortFirstTry(arr);
         }
     }
-    
-    
+
+    public static void bubbleSortFirstSolution(int[] arr) { // Solution 1
+        for (int i = 0; i < arr.length; i++) {
+
+            for (int j = 0; j < arr.length - 1 - i; j++) {
+                int a = arr[j];
+                int b = arr[j + 1];
+
+                if (a > b) {
+                    arr[j] = b;
+                    arr[j + 1] = a;
+                }
+            }
+        }
+    }
+
 }
