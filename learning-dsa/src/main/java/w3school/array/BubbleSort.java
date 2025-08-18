@@ -2,27 +2,27 @@ package w3school.array;
 
 public class BubbleSort {
     public static void main(String[] args) {
-        // Solution 1: bubbleSortRunOneTime
+        // Try 1: bubbleSortFirstTry
         /*int[] arr = {7, 12, 9, 11, 3};
         //int[] arr = {7, 9, 11, 3, 12};
         //int[] arr = {7, 9, 3, 11, 12};
         //int[] arr = {7, 3, 9, 11, 12};
         System.out.println("Sorted array: ");
-        bubbleSortRunOneTime(arr);
+        bubbleSortFirstTry(arr);
         for (int num : arr) {
             System.out.print(num + " ");
         }*/
 
-        // Solution 2: bubbleSortComplete
+        // Try 2: bubbleSortSecondTry
         int[] arr2 = {7, 12, 9, 11, 3};
-        bubbleSortComplete(arr2);
+        bubbleSortSecondTry(arr2);
         for (int num : arr2) {
             System.out.print(num + " ");
         }
 
     }
 
-    public static void bubbleSortRunOneTime(int[] arr) { // Solution 1
+    public static void bubbleSortFirstTry(int[] arr) { // Try 1
         for (int i = 0; i < arr.length; i++) {
             if (i < arr.length - 1) {
                 int a = arr[i];
@@ -37,9 +37,11 @@ public class BubbleSort {
         }
     }
 
-    public static void bubbleSortComplete(int[] arr) {
+    public static void bubbleSortSecondTry(int[] arr) { // Try 1
         for (int i = 0; i < arr.length; i++) {
-            bubbleSortRunOneTime(arr);
+            bubbleSortFirstTry(arr);
         }
     }
+    
+    
 }
