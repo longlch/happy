@@ -27,6 +27,13 @@ public class BubbleSort {
             System.out.print(num + " ");
         }*/
 
+        // Solution 2: bubbleSortFirstSolution
+        int[] arr = {7, 12, 9, 11, 3};
+        bubbleSortSecondSolution(arr);
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+
     }
 
     public static void bubbleSortFirstTry(int[] arr) { // Try 1
@@ -64,5 +71,28 @@ public class BubbleSort {
             }
         }
     }
+
+    public static void bubbleSortSecondSolution(int[] arr) { // Solution 2
+        for (int i = 0; i < arr.length; i++) {
+            boolean swaped = false;
+
+            for (int j = 0; j < arr.length - 1 - i; j++) {
+                int a = arr[j];
+                int b = arr[j + 1];
+
+                if (a > b) {
+                    arr[j] = b;
+                    arr[j + 1] = a;
+                    swaped = true;
+                }
+            }
+
+            if (!swaped) {
+                break;
+            }
+        }
+    }
+
+
 
 }
